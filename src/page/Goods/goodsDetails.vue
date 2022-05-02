@@ -88,10 +88,11 @@
       ...mapMutations(['ADD_CART', 'ADD_ANIMATION', 'SHOW_CART']),
       _productDet (productId) {
         productDet(productId).then(res => {
-          // console.log(res);
+          console.log(res);
           let result = res.data
           this.product = res.data
-          this.productMsg = `<img src=\"${result.planImgUrl}\" style=\"width:1220px;height:4957px;\" alt=\"\" />` || ''
+          // this.productMsg = `<img src=\"${result.planImgUrl}\" style=\"width:1220px;\" alt=\"\" />` || ''
+          this.productMsg = `<img src=\"${result.productUrlList[0].imgUrl}\" style=\"width:1220px;height:auto;\" alt=\"\" />` || ''
           this.small = result.productUrlList
           this.big = result.planImgUrl
         })

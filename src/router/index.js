@@ -4,6 +4,7 @@ const Index = () => import('/page/index.vue')
 const Login = () => import('/page/Login/login.vue')
 const Register = () => import('/page/Login/register.vue')
 const Home = () => import('/page/Home/home.vue')
+const Yiqing = () => import('/page/Yiqing/yiqing.vue')
 const GoodS = () => import('/page/Goods/goods.vue')
 const goodsDetails = () => import('/page/Goods/goodsDetails.vue')
 const Cart = () => import('/page/Cart/cart.vue')
@@ -39,6 +40,7 @@ export default new Router({
         {path: 'goods', component: GoodS},
         {path: 'goodsDetails', name: 'goodsDetails', component: goodsDetails},
         {path: 'thanks', name: 'thanks', component: Thanks},
+        {path: 'map', name: 'map', component: Yiqing},
         {path: '/refreshgoods', name: 'refreshgoods', component: RefreshGoods}
       ]
     },

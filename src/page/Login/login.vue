@@ -1,132 +1,174 @@
+
+
 <template>
-  <div class="login v2" id="login">
-    <div class="wrapper">
-      <div class="dialog dialog-shadow" style="display: block; margin-top: -362px;">
-        <div class="title">
-          <h4>使用 CTGU 账号 登录官网</h4>
+  <div class="login-container">
+  	<div class="layer">
+  			<div class="some-space">
+        	<div class="form">
+						<h2>CTGU保险推荐系统</h2>
+
+
+
+
+			<div class="item">
+			<i class="iconfont icon-user"></i>
+			<input
+	              autocomplete="off"
+	              type="text"
+	              class="input"
+	              v-model="ruleForm.userName"
+	              placeholder="请输入用户名"
+	            />
+            </div>
+
+
+
+
+
+            <div class="item">
+            	<i class="iconfont icon-password"></i>
+	            <input
+	              autocomplete="off"
+	              type="password"
+	              class="input"
+	              v-model="ruleForm.userPwd"
+	              maxlength="20"
+	              @keyup.enter="login"
+	              placeholder="请输入密码"
+	            />
+            </div>
+
+			<div class="item">
+			<i class="iconfont icon-user"></i>
+			<input
+	              autocomplete="off"
+	              type="text"
+	              class="input"
+	              v-model="ruleForm.captcha"
+	              placeholder="验证码"
+	            />
+			<img class="ShowCaptcha" ref="captcha" :src="captchaUrl" alt="" @click="getCaptcha">
+
+            </div>
+
+
+	          <button 
+	            class="loginBtn"
+	            :text="logintxt"
+				@click="login"
+				>
+	            {{logintxt}}
+	          </button>
+	          <div class="tip">
+							默认用户名：admin ，默认密码：123
+	          </div>
+			  <br>
+			  <a href="javascript:;" class="tip" style="font-size: 12px; padding-top: 20px;color:white;" @click="toRegister">还没有账号？注册 CTGU 账号</a>
+        	</div>
         </div>
-        <div v-if="loginPage" class="content">
-          <ul class="common-form">
-            <li class="username border-1p">
-
-              <div class="input">
-                <input type="text" v-model="ruleForm.userName" placeholder="账号">
-              </div>
-            </li>
-
-            <li>
-              <div class="input">
-                <input type="password" v-model="ruleForm.userPwd" @keyup.enter="login" placeholder="密码">
-              </div>
-            </li>
-
-            <li>
-            <div class="input">
-              <div style="width:300px">
-                <input type="text" style="width:250px" v-model="ruleForm.captcha" placeholder="验证码">
-                </div>
-                <img class="ShowCaptcha" ref="captcha" :src="captchaUrl" alt="" @click="getCaptcha">
-
-              </div>
-            </li>
-
-            <!-- <li>
-              <div id="captcha">
-                <p id="wait">正在加载验证码...</p>
-              </div>
-            </li> -->
-
-            <li style="text-align: right" class="pr">
-              <el-checkbox class="auto-login" v-model="autoLogin">记住密码</el-checkbox>
-              <!-- <span class="pa" style="top: 0;left: 0;color: #d44d44">{{ruleForm.errMsg}}</span> -->
-              <a href="javascript:;" class="register" @click="toRegister">注册 CTGU 账号</a>
-              <a style="padding: 1px 0 0 10px" @click="open('找回密码','请联系作者邮箱找回密码或使用测试账号登录：test | test')">忘记密码 ?</a>
-            </li>
-          </ul>
-          <!--登陆-->
-          <div style="margin-top: 25px">
-            <y-button :text="logintxt"
-                      :classStyle="ruleForm.userPwd&& ruleForm.userName&& logintxt === '登录'?'main-btn':'disabled-btn'"
-                      @btnClick="login"
-                      
-                      style="margin: 0;width: 100%;height: 48px;font-size: 18px;line-height: 48px"></y-button>
-          </div>
-          <!--返回-->
-          <div>
-            <y-button text="返回" @btnClick="login_back"
-              style="marginTop: 10px;marginBottom: 15px;width: 100%;height: 48px;font-size: 18px;line-height: 48px">
-            </y-button>
-          </div>
-          <div class="border"></div>
-          <div class="footer">
-            <div class="other">其它账号登录：</div>
-            <a><img @click="open('待开发','此功能开发中...')" style="height: 15px; margin-top: 22px;" src="/static/images/other-login.png"></a>
-          </div>
-        </div>
-      </div>
     </div>
-    <!-- <img src="static/svg/background.svg" alt=""> -->
+
+	    <vue-particles 
+	      color="#6495ED"
+	      :particleOpacity="0.7"
+	      :particlesNumber="80"
+	      shapeType="circle"
+	      :particleSize="4"
+	      linesColor="#6495ED"
+	      :linesWidth="1"
+	      :lineLinked="true"
+	      :lineOpacity="0.6"
+	      :linesDistance="150"
+	      :moveSpeed="3"
+	      :hoverEffect="true"
+	      hoverMode="grab"
+	      :clickEffect="true"
+	      clickMode="push"
+	    >
+	    </vue-particles>
+
+    <bgAnimation />
+
+    <!-- <modal 
+      title="提示" 
+      :content="modalContent"
+      :visible.sync="visible" 
+      @confirm="confirm">
+    </modal> -->
+
   </div>
 </template>
-<script src="../../../static/geetest/gt.js"></script>
+
 <script>
+import bgAnimation from '../../components/bgAnimation'
+import modal from '../../components/modal'
 import YFooter from '/common/footer'
 import YButton from '/components/YButton'
 import { userLogin, geetest } from '/api/index.js'
 import { addCart } from '/api/goods.js'
-import store from '../../store/'
+import store from '../../store'
 import { setStore, getStore, removeStore } from '/utils/storage.js'
 require('../../../static/geetest/gt.js')
-
 export default {
-  data () {
-    function getUrlBase64(url, ext, callback) {
-    var canvas = document.createElement("canvas");   //创建canvas DOM元素
-    var ctx = canvas.getContext("2d");
-    var img = new Image;
-    img.crossOrigin = 'Anonymous';
-    img.src = url;
-    img.onload = function () {
-        canvas.height = 60; //指定画板的高度,自定义
-        canvas.width = 85; //指定画板的宽度，自定义
-        ctx.drawImage(img, 0, 0, 60, 85); //参数可自定义
-        var dataURL = canvas.toDataURL("image/" + ext);
-        callback.call(this, dataURL); //回掉函数获取Base64编码
-        canvas = null;
-    };
-}
-    return {
-      // captchaUrl: '/api/captcha',
-      captchaUrl: 'https://ins-spring-boot-1618793-1309615625.ap-shanghai.run.tcloudbase.com/captcha',
-      cart: [],
-      showcaptcha: true,
-      loading: true,
-      loginPage: true,
-      ruleForm: {
-        userName: '',
-        userPwd: '',
+  name: 'Login',
+  components: { bgAnimation, modal },
+  data() {
+  	return {
+		        captchaUrl: 'https://ins-spring-boot-1618793-1309615625.ap-shanghai.run.tcloudbase.com/captcha',
+	ruleForm: {
+        userName: 'admin',
+        userPwd: '123',
         errMsg: '',
         captcha: ''
       },
-      registered: {
-        userName: '',
-        userPwd: '',
-        userPwd2: '',
-        errMsg: ''
-      },
-      autoLogin: false,
-      logintxt: '登录',
-      statusKey: '',
-      ImgData: ''
-    }
+	  logintxt: '登录',
+  		// userName: 'admin',
+  		// userPwd: '123',
+      visible: false,
+      modalContent: '这是一段自定义模态框消息'
+  	}
   },
   computed: {
+  	isLoginAble() {
+  		return !(this.userName && this.userPwd);
+  	},
     count () {
       return this.$store.state.login
     }
   },
+  created() {},
+  mounted() {
+    this.getRemembered()
+    this.login_addCart()
+    // this.init_geetest()
+    // this.open('登录提示', '测试体验账号密码：admin | 123')
+    let self = this
+    document.onkeydown = function(e) {
+      let ev = document.all ? window.event : e
+      if (ev.keyCode === 13) {
+        self.login()
+      }
+    }
+  },
   methods: {
-    getCaptcha(event) {
+  	// login () {
+  	// 	if (this.userName == 'admin' && this.userPwd == '123') {
+    //      this.$router.push({
+    //       path: '/home'
+    //      })
+    //   } else {
+    //     this.$Toast({
+    //       content: '请输入正确的用户名和密码',
+    //       type: 'error',
+    //       // hasClose: true
+    //     })
+    //   }
+  	// },
+    // confirm () {
+    //   this.visible = false;
+    //   console.log('点击确定')
+    // }
+	    getCaptcha(event) {
       // geetest()
       // this.captchaUrl = '/api/captcha?time=' + Date.now()
       this.captchaUrl = 'https://ins-spring-boot-1618793-1309615625.ap-shanghai.run.tcloudbase.com/captcha?time=' + Date.now()
@@ -270,218 +312,189 @@ export default {
         // }
       })
     }
-  },
-  mounted () {
-    this.getRemembered()
-    this.login_addCart()
-    // this.init_geetest()
-    this.open('登录提示', '测试体验账号密码：admin | 123')
-    let self = this
-    document.onkeydown = function(e) {
-      let ev = document.all ? window.event : e
-      if (ev.keyCode === 13) {
-        self.login()
-      }
-    }
-  },
-  components: {
-    YFooter,
-    YButton
   }
 }
 </script>
-<style lang="scss" rel="stylesheet/scss" scoped>
 
-* {
-  box-sizing: content-box;
+<style lang="scss" scoped>
+.login-container {
+	.layer {
+	  position: absolute;
+	  height: 100%;
+	  width: 100%;
+	}
+	#particles-js {
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  width: 100%;
+	  height: 100%;
+    z-index: 1000;
+	}
+	.some-space {
+	  color: white;
+	  font-weight: 100;
+	  letter-spacing: 2px;
+	  position: absolute;
+	  top: 50%;
+	  left: 50%;
+	  z-index: 1001;
+	  -webkit-transform: translate3d(-50%, -50%, 0);
+	  transform: translate3d(-50%, -50%, 0);
+
+	//   -ms-animation: cloud 2s 3s ease-in infinite alternate;
+	//   -moz-animation: cloud 2s 3s ease-in infinite alternate;
+	//   -webkit-animation: cloud 2s 3s ease-in infinite alternate;
+	//   -o-animation: cloud 2s 3s ease-in infinite alternate;
+	//   -webkit-animation: cloud 2s 3s ease-in infinite alternate;
+	//   animation: cloud 2s 3s ease-in infinite alternate;
+
+	  .form {
+	  	width: 460px;
+	  	height: auto;
+	  	background: rgba(36, 36, 85, .5);
+	  	margin: 0 auto;
+	  	padding: 35px 30px 25px;
+	  	box-shadow: 0 0 25px rgba(255, 255, 255, .5);
+	  	border-radius: 10px;
+	    .item {
+	    	display: flex;
+	    	align-items: center;
+				margin-bottom: 25px;
+        border-bottom: 1px solid #d3d7f7;
+				i {
+					color: #d3d7f7;
+					margin-right: 10px;
+				}
+	    }
+	  	h2 {
+	  		text-align: center;
+	  		font-weight: normal;
+	  		font-size: 26px;
+	  		color: #d3d7f7;
+	  		padding-bottom: 35px;
+	  	}
+	  	.input {
+        font-size: 16px;
+        line-height: 30px;
+        width: 100%;
+        color: #d3d7f7;
+        outline: none;
+        border: none;
+        background-color: rgba(0, 0, 0, 0);
+        padding: 10px 0;
+	  	}
+	  	.loginBtn {
+	  		width: 100%;
+	  		padding: 12px 0;
+	  		border: 1px solid #d3d7f7;
+        font-size: 16px;
+    		color: #d3d7f7;
+    		cursor: pointer;
+    		background: transparent;
+    		border-radius: 4px;
+        margin-top: 10px;
+		  transition: 0.3s;
+    		&:hover {
+    			color: #fff;
+    			background: #0090ff;
+    			border-color: #0090ff;
+    		}
+	  	}
+	  	.tip {
+        font-size: 12px;
+        padding-top: 20px;
+	  	}
+	  }
+
+
+	}
+
+}
+
+input::-webkit-input-placeholder {
+    color: #d3d7f7;
+}
+input::-moz-placeholder {   /* Mozilla Firefox 19+ */
+    color: #d3d7f7;
+}
+input:-moz-placeholder {    /* Mozilla Firefox 4 to 18 */
+    color: #d3d7f7;
+}
+input:-ms-input-placeholder {  /* Internet Explorer 10-11 */ 
+    color: #d3d7f7;
 }
 
 
-.login {
-  // background: url(static/svg/background.svg);
-  overflow-x: hidden;
-  overflow-y: hidden;
-  .input {
-    height: 50px;
-    display: flex;
-    align-items: center;
-    input {
-      font-size: 16px;
-      width: 100%;
-      height: 100%;
-      padding: 10px 15px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+@-ms-keyframes cloud{
+    0%{
+        -ms-transform: translate(-50%, -50%);
     }
-  }
-  .wrapper {
-    background: url(/static/images/bg_9b9dcb65ff.png) repeat;
-    background-size: 100px;
-    min-height: 800px;
-    min-width: 630px;
-  }
-}
-
-.v2 .dialog {
-  width: 450px;
-  border: 1px solid #dadada;
-  border-radius: 10px;
-  top: 50%;
-  left: 50%;
-  margin-left: -225px;
-  position: absolute;
-  .title {
-    background: linear-gradient(#fff, #f5f5f5);
-    height: auto;
-    overflow: visible;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-    position: relative;
-    background-image: url(/static/images/smartisan_4ada7fecea.png);
-    background-size: 140px;
-    background-position: top center;
-    background-repeat: no-repeat;
-    height: 92px;
-    margin: 23px 0 50px;
-    padding: 75px 0 0;
-    box-shadow: none;
-    h4 {
-      padding: 0;
-      text-align: center;
-      color: #666;
-      border-bottom: 1px solid #dcdcdc;
-      -webkit-box-shadow: none;
-      -moz-box-shadow: none;
-      box-shadow: none;
-      font-weight: 700;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      border-bottom: 0;
-      -webkit-box-shadow: none;
-      -moz-box-shadow: none;
-      box-shadow: none;
-      line-height: 1em;
-      height: auto;
-      color: #333;
-      font-weight: 400;
+    40%{
+        opacity: 1;
     }
-  }
-  .content {
-    padding: 0 40px 22px;
-    height: auto;
-    .common-form {
-      li {
-        clear: both;
-        margin-bottom: 15px;
-        position: relative;
-      }
+    60%{
+        opacity: 1;
     }
-  }
+    100%{
+        -ms-transform: translate(-50%, -40%);
+    }
 }
-
-.dialog-shadow,
-.v2 .bbs .dialog-shadow,
-.v2 .dialog-shadow {
-  -webkit-box-shadow: 0 9px 30px -6px rgba(0, 0, 0, 0.2),
-    0 18px 20px -10px rgba(0, 0, 0, 0.04), 0 18px 20px -10px rgba(0, 0, 0, 0.04),
-    0 10px 20px -10px rgba(0, 0, 0, 0.04);
-  -moz-box-shadow: 0 9px 30px -6px rgba(0, 0, 0, 0.2),
-    0 18px 20px -10px rgba(0, 0, 0, 0.04), 0 18px 20px -10px rgba(0, 0, 0, 0.04),
-    0 10px 20px -10px rgba(0, 0, 0, 0.04);
-  box-shadow: 0 9px 30px -6px rgba(0, 0, 0, 0.2),
-    0 18px 20px -10px rgba(0, 0, 0, 0.04), 0 18px 20px -10px rgba(0, 0, 0, 0.04),
-    0 10px 20px -10px rgba(0, 0, 0, 0.04);
+@-moz-keyframes cloud{
+    0%{
+        -moz-transform: translate(-50%, -50%);
+    }
+    40%{
+        opacity: 1;
+    }
+    60%{
+        opacity: 1;
+    }
+    100%{
+        -moz-transform: translate(-50%, -40%);
+    }
 }
-
-@media screen and (min-width: 737px),
-  screen and (-webkit-max-device-pixel-ratio: 1.9) and (max-width: 736px) and (min-device-width: 737px) {
-  .wrapper {
-    background: url(/static/images/con-bg_04f25dbf8e.jpg) repeat-x;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
-  .dialog {
-    background: url(/static/images/dialog-gray-bg.png) #fff bottom repeat-x;
-    border-radius: 12px;
-    display: none;
-    margin: -163px 0 0 -218px;
-    width: 436px;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-  }
-  .dialog .title h4 {
-    border-bottom: #d1d1d1 solid 1px;
-    box-shadow: 0 2px 6px #d1d1d1;
-    color: #666;
-    font-size: 20px;
-    height: 61px;
-    line-height: 61px;
-    padding: 0 0 0 35px;
-  }
-  .common-form li {
-    clear: both;
-    margin-bottom: 15px;
-    position: relative;
-  }
-  .auto-login {
-    position: absolute;
-    top: 0px;
-    left: 2px;
-    color: #999;
-  }
-  .register {
-    padding: 1px 10px 0;
-    border-right: 1px solid #ccc;
-  }
-  .border {
-    margin-top: 10px;
-    border-bottom: 1px solid #ccc;
-  }
-  .other {
-    margin: 20px 5px 0 0;
-    width: auto;
-    color: #bbb;
-    font-size: 12px;
-    cursor: default;
-    color: #999;
-  }
-  .footer {
-    display: flex;
-    flex-direction: row;
-  }
-  .agree {
-    margin-bottom: 30px;
-    color: #999;
-  }
+@-o-keyframes cloud{
+    0%{
+        -o-transform: translate(-50%, -50%);
+    }
+    40%{
+        opacity: 1;
+    }
+    60%{
+        opacity: 1;
+    }
+    100%{
+        -o-transform: translate(-50%, -40%);
+    }
 }
-
-.registered {
-  h4 {
-    padding: 0;
-    text-align: center;
-    color: #666;
-    border-bottom: 1px solid #dcdcdc;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    font-weight: 700;
-    font-size: 20px;
-    height: 60px;
-    line-height: 60px;
-  }
+@-webkit-keyframes cloud{
+    0%{
+        -webkit-transform: translate(-50%, -50%);
+    }
+    40%{
+        opacity: 1;
+    }
+    60%{
+        opacity: 1;
+    }
+    100%{
+        -webkit-transform: translate(-50%, -40%);
+    }
 }
-
-#wait {
-  text-align: left;
-  color: #999;
-  margin: 0;
+@keyframes cloud{
+    0%{
+        transform: translate(-50%, -50%);
+    }
+    40%{
+        opacity: 1;
+    }
+    60%{
+        opacity: 1;
+    }
+    100%{
+        transform: translate(-50%, -40%);
+    }
 }
+	
 </style>

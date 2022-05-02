@@ -156,3 +156,7 @@ export const getQuickSearch = (params) => {
     params: params,
   })
 }
+
+export const getYiqing = (params) => {
+  return http.fetchGet('/yiqing/interface/fymap2020_data.json')
+}

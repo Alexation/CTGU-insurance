@@ -136,8 +136,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: linear-gradient(to right, #bf30ac 0%, #0f9d58 100%);
-
+    // background-image: linear-gradient(to right, #bf30ac 0%, #0f9d58 100%);
+    // background-color: #e66d6d;
+    background-color: #e66d6d;
+    // background-image: linear-gradient(0deg, #6f83db 0%,  #867fef  100%);
   }
 
   .container {
@@ -161,24 +163,24 @@
   }
 
   .c1 {
-    color: #646464;
-    color: #dbdbdb;
+    // color: #646464;
+    color: #fefafa;
     font-size: 14.5px;
     padding: 0 0 14px;
 
   }
 
   .c2 {
-    color: #c3c3c3;
-    color: #dbdbdb;
+    // color: #c3c3c3;
+    color: #fefafa;
     font-size: 14.5px;
     padding: 6px 0;
 
   }
 
   .c3 {
-    color: #969696;
-    color: #dbdbdb;
+    // color: #969696;
+    color: #fefafa;
 
   }
 
@@ -193,15 +195,15 @@
   .tel {
     font-size: 30px;
     line-height: 1;
-    color: #646464;
-    color: #dbdbdb;
+    // color: #646464;
+    color: #fefafa;
     top: -2px;
     position: relative;
   }
 
   .c5 {
-    color: #646464;
-    color: #dbdbdb;
+    // color: #646464;
+    color: #fefafa;
     right: -70px;
     position: relative;
   }
@@ -214,8 +216,8 @@
     width: 241px;
     font-size: 12px;
     line-height: 18px;
-    color: #c3c3c3;
-    color: #dbdbdb;
+    // color: #c3c3c3;
+    color: #fefafa;
     text-align: right;
   }
 
@@ -224,8 +226,8 @@
     width: 241px;
     font-size: 12px;
     line-height: 18px;
-    color: #c3c3c3;
-    color: #dbdbdb;
+    // color: #c3c3c3;
+    color: #fefafa;
     text-align: right;
   }
 
@@ -239,8 +241,8 @@
   }
 
   .copyright {
-    color: #434d55;
-    color: #dbdbdb;
+    // color: #434d55;
+    color: #fefafa;
     font-size: 14.5px;
     padding: 40px 0 0;
     display: flex;
@@ -254,7 +256,7 @@
 
   .content-c0 {
     color: #5079d9;
-    color: #dbdbdb;
+    color: #fefafa;
     cursor: pointer;
     text-decoration: none;
     &:hover {
@@ -273,8 +275,8 @@
     float: left;
     height: 15px;
     line-height: 15px;
-    color: #757575;
-    color: #dbdbdb;
+    // color: #757575;
+    color: #fefafa;
   }
 
   .cop {
@@ -285,8 +287,8 @@
 
   .content-c3 {
     margin-right: 20px;
-    color: #bdbdbd;
-    color: #dbdbdb;
+    // color: #bdbdbd;
+    color: #fefafa;
     font-size: 12px;
     height: 12px;
     line-height: 1;

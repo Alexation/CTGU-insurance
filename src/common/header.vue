@@ -22,6 +22,8 @@
               <!-- <router-link to="/" title="CTGU保险推荐系统">CTGU保险推荐系统</router-link> -->
             </div>
 
+
+
             <div class="right-box">
               <div class="nav-list">
                 <!-- <el-autocomplete
@@ -38,6 +40,7 @@
                 <el-input
                   placeholder="请输入商品信息"
                   icon="search"
+                  style="width:480px"
                   v-model="input"
                   @select="handleSelect"
                   :on-icon-click="handleIconClick"
@@ -45,6 +48,7 @@
                 </el-input>
                 <router-link to="/goods"><a @click="changePage(2)">全部商品</a></router-link>
                 <router-link to="/thanks"><a @click="changePage(4)">调查问卷</a></router-link>
+                <router-link to="/map"><a @click="changePage(4)">疫情地图</a></router-link>
                 <!-- <router-link to="/category"><a @click="changePage(4)">保险分类</a></router-link> -->
                 <!-- <router-link to="/">Smartisan M1 / M1L</router-link>
                 <router-link to="/">Smartisan OS</router-link>
@@ -59,8 +63,9 @@
               <div class="nav-aside" ref="aside" >
 
                 <div v-if="!isLogin">
+                <!-- <div> -->
                  <router-link to="/login">
-                 <div style="color:#c8c8c8;">登录</div>
+                 <div style="color:#fefafa;font-family: SimHei;font-size: 15px">登录</div>
                  </router-link>
                  </div>
 
@@ -543,7 +548,10 @@
     // background: $head-bgc;
     // background-image: -webkit-linear-gradient(#000, #121212);
     // background-image: linear-gradient(#000, #121212);
-    background-image: linear-gradient(to right, #bf30ac 0%, #0f9d58 100%);
+    // background-image: linear-gradient(to right, #bf30ac 0%, #0f9d58 100%);
+    background-color: #e66d6d;
+    // background-image: linear-gradient(0deg, #6f83db 0%,  #9face7  100%);
+    // background-image: linear-gradient(0deg, #6f83db 0%,  #867fef  100%);
     width: 100%;
 
     // position: relative;
@@ -575,7 +583,7 @@
     font-size: 26px;
     font-weight: 500;
     color: #fff;
-    flex: 20;
+    flex: 30;
   }
 
   .w-box {
@@ -607,10 +615,12 @@
       }
       a {
         width: 110px;
-        color: #c8c8c8;
+        // color: #c8c8c8;
+        color: #fefafa;
+        font-family: SimHei;
         display: block;
-        font-size: 14px;
-        padding: 0 25px;
+        font-size: 15px;
+        padding: 0 20px;
         &:hover {
           color: #fff;
         }
@@ -676,6 +686,10 @@
 
     .right-box {
       display: flex;
+      // font-family: SimHei;
+      // font-size: 18px;
+      // font-weight: 500;
+      // color: #fff;
     }
     .nav-aside {
       display: flex;
@@ -703,14 +717,27 @@
         display: block;
         text-indent: -9999px;
         &:before {
+
+
+
           content: " ";
           position: absolute;
           left: 8px;
-          top: 0;
+          top: 0px;
           @include wh(20px);
-          background: url(/static/images/account-icon@2x.32d87deb02b3d1c3cc5bcff0c26314ac.png) -155px 0;
+          background: url(/static/images/account-icon@2x.32d87deb02b3d1c3cc5bcff0c26314ac.png) no-repeat -5px 0px;
           background-size: 240px 107px;
           transition: none;
+
+
+
+          // position: absolute;
+          // content: " ";
+          // background: url(/static/images/account-icon@2x.32d87deb02b3d1c3cc5bcff0c26314ac.png) no-repeat -49px -43px;
+          // background-size: 240px 107px;
+          // @include wh(20px, 8px);
+          // top: -8px;
+          // margin-left: -10px;
         }
 
       }

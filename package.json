@@ -11,10 +11,13 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
+    "async": "^3.2.3",
     "axios": "^0.16.2",
+    "echarts": "^4.8.0",
     "element-ui": "^1.4.13",
     "geetest3": "^1.0.0",
     "gitment": "0.0.3",
+    "less-loader": "^10.2.0",
     "mockjs": "^1.1.0",
     "nprogress": "^0.2.0",
     "vue": "^2.5.16",
@@ -65,6 +68,7 @@
     "shelljs": "^0.7.6",
     "url-loader": "^0.5.8",
     "vue-loader": "^12.1.0",
+    "vue-particles": "^1.0.9",
     "vue-style-loader": "^3.1.2",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^2.6.1",

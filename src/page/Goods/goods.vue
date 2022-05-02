@@ -73,18 +73,18 @@
           </y-shelf>
         </section>
       </div>
-      <div class="no-info" v-if="error">
+      <!-- <div class="no-info" v-if="error">
         <div class="no-data">
           <img src="/static/images/error.png">
           <br> 抱歉！出错了...
-        </div>
-        <section class="section">
+        </div> -->
+        <!-- <section class="section">
           <y-shelf :title="recommendPanel.name">
             <div slot="content" class="recommend">
               <mall-goods :msg="item" v-for="(item,i) in recommendPanel.panelContents" :key="i"></mall-goods>
             </div>
           </y-shelf>
-        </section>
+        </section> -->
       </div>
     </div>
 

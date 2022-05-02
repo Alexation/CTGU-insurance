@@ -242,7 +242,7 @@
     methods: {
       QuesSubmit() {
         this.$message({
-          message:'提交很成功',
+          message:'提交成功',
           type: 'success'
         })
       },
@@ -295,7 +295,7 @@
       this._thanksList()
       this.initGitment()
       getQues({pageNum:1, pageSize:10}).then(res=>{
-        // console.log(res);
+        console.log(res);
       })
     },
     components: {

@@ -301,7 +301,7 @@ import { setStore } from '../../../utils/storage'
         reader.onload = (e) => {
           this.option.img = e.target.result
         }
-        // console.log(e.target.files[0]);
+        console.log(e.target.files[0]);
         // this.option.img = e.target.files[0]
         this.imgObj = e.target.files[0]
 
@@ -309,7 +309,7 @@ import { setStore } from '../../../utils/storage'
       cropper () {
         this.message('上传中...')
         if (this.option.img) {
-          // console.log(this.option.img);
+          console.log(this.option.img);
           // this.$refs.cropper.getCropData((data) => {
             // this.imgSrc = data
             let imgDataUrl = new FormData()

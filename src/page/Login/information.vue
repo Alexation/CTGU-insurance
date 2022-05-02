@@ -312,7 +312,7 @@ export default {
         },1000);
         SendEmailCaptcha({ to: this.ruleForm.email }).then((res) => {
           if (res.code === 200) {
-            // console.log(res);
+            console.log(res);
             // this.messageSuccess();
             this.messageSuccess(res.msg);
             // this.toLogin();
@@ -403,7 +403,7 @@ export default {
       window.localStorage.setItem("satoken", "");
       register(updateData).then((res) => {
         if (res.code === 200) {
-          // console.log(res);
+          console.log(res);
           this.messageSuccess('恭喜你注册成功，抓紧去登录吧！');
           this.toLogin();
         } else {

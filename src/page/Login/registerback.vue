@@ -9,69 +9,64 @@
           <h4>注册 CTGU 账号</h4>
           <div class="content" style="margin-top: 20px">
             <ul class="common-form">
-              <li class="username border-1p">
-                <div style="margin-top: 40px" class="input">
-                  <el-input
-                    type="text"
-                    v-model="registered.userName"
-                    placeholder="账号"
-                    @keyup="
-                      registered.userName = registered.userName.replace(
-                        /[^\w\.\/]/gi,
-                        ''
-                      )
-                    "
-                  />
-                </div>
-              </li>
-              <li>
-                <div class="input">
-                  <el-input
-                    type="password"
-                    v-model="registered.userPwd"
-                    placeholder="密码"
-                  />
-                </div>
-              </li>
-              <li>
-                <div class="input">
-                  <el-input
-                    type="password"
-                    v-model="registered.userPwd2"
-                    placeholder="重复密码"
-                  />
-                </div>
-              </li>
 
-              <li>
-                <div class="input">
-                  <el-input
-                    type="text"
-                    v-model="ruleForm.email"
-                    placeholder="邮箱"
-                  />&nbsp
+
+
+          <el-form 
+          :model="ruleForm" 
+          status-icon 
+          :rules="rules" 
+          ref="ruleForm" 
+          label-width="100px" 
+          class="demo-ruleForm"
+          label-position="left"
+
+          >
+            
+            <el-form-item label="账号" prop="userName">
+              <el-input v-model.number="ruleForm.userName"></el-input>
+            </el-form-item>
+            
+            <el-form-item label="密码" prop="userPwd">
+              <el-input type="password" v-model="ruleForm.userPwd" autoComplete="off"></el-input>
+            </el-form-item>
+
+            <el-form-item label="确认密码" prop="checkPass">
+              <el-input type="password" v-model="ruleForm.checkPass" autoComplete="off"></el-input>
+            </el-form-item>
+
+            <el-form-item label="真实姓名" prop="name">
+              <el-input v-model="ruleForm.name"></el-input>
+            </el-form-item>
+
+            <el-form-item label="邮箱" prop="email">
+              <div>
+              <el-input 
+              style="width:155px;"
+              
+              v-model="ruleForm.email"></el-input>
+                                &nbsp
                   <el-button 
                   @click="SendEmail"
+                  :disabled='isDisabled' 
+                  style="width: 70px;"
                   
-                  >发送验证码</el-button>
-                </div>
-              </li>
+                  >{{captchaTime}}</el-button>
+            </div>
+            </el-form-item>
 
-              <li>
-                <div class="input">
-                  <el-input
-                    type="text"
-                    v-model="ruleForm.captcha"
-                    placeholder="验证码"
-                  />
-                </div>
-              </li>
+            <el-form-item label="验证码" prop="captcha">
+              <el-input v-model="ruleForm.captcha"></el-input>
+            </el-form-item>
+             
 
-              <!-- <li>
-                <div id="captcha">
-                  <p id="wait">正在加载验证码...</p>
-                </div>
-              </li> -->
+            <!-- <el-form-item>
+              <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+              <el-button @click="resetForm('ruleForm')">重置</el-button>
+            </el-form-item> -->
+
+          </el-form>
+
             </ul>
             <el-checkbox class="agree" v-model="agreement">
               我已阅读并同意遵守
@@ -98,9 +93,10 @@
             <div style="margin-bottom: 30px">
               <y-button
                 :classStyle="
-                  registered.userPwd &&
-                  registered.userPwd2 &&
-                  registered.userName &&
+                  ruleForm.userName &&
+                  ruleForm.userPwd &&
+                  ruleForm.checkPass &&
+                  ruleForm.captcha &&
                   registxt === '注册'
                     ? 'main-btn'
                     : 'disabled-btn'
@@ -137,6 +133,7 @@
             </ul>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -150,24 +147,49 @@ require("../../../static/geetest/gt.js");
 var captcha;
 export default {
   data() {
-      var checkAge = (rule, value, callback) => {
+    
+      var checkUserName = (rule, value, callback) => {
         if (!value) {
-          return callback(new Error('年龄不能为空'));
+          return callback(new Error('账号不能为空'));
+        }else{
+          this.submitValid = true;
+          callback()
+        }
+      };
+      var checkCaptcha = (rule, value, callback) => {
+        if (!value) {
+          this.submitValid = false;
+          return callback(new Error('验证码不能为空'));
+        }else{
+          this.submitValid = true;
+          callback()
+        }
+      };
+      
+      var checkEmail = (rule, value, callback) => {
+        var reg = /^[0-9a-zA-Z_.-]+[@][0-9a-zA-Z_.-]+([.][a-zA-Z]+){1,2}$/; 
+        if (!value) {
+          this.submitValid = false;
+          return callback(new Error('邮箱不能为空'));
+        }
+        else{
+          this.submitValid = true;
         }
         setTimeout(() => {
-          if (!Number.isInteger(value)) {
-            callback(new Error('请输入数字值'));
+          if (!reg.test(value)) {
+            this.emailValid = false;
+            this.submitValid = false;
+            callback(new Error('请输入正确的邮箱格式'));
           } else {
-            if (value < 18) {
-              callback(new Error('必须年满18岁'));
-            } else {
-              callback();
-            }
+            this.emailValid = true;
+            this.submitValid = true;
+            callback();
           }
-        }, 1000);
+        }, 100);
       };
       var validatePass = (rule, value, callback) => {
         if (value === '') {
+          this.submitValid = false;
           callback(new Error('请输入密码'));
         } else {
           if (this.ruleForm.checkPass !== '') {
@@ -178,22 +200,31 @@ export default {
       };
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
+          this.submitValid = false;
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm.pass) {
+        } else if (value !== this.ruleForm.userPwd) {
+          this.submitValid = false;
           callback(new Error('两次输入密码不一致!'));
         } else {
+          this.submitValid = true;
           callback();
         }
       };
     return {
       cart: [],
+      // captchaStr: '发送验证码',
+      // captchaTime: 60,
+      captchaTime: '发送验证码',
+      isDisabled: false,
+      emailValid: false,
+      submitValid: false,
       loginPage: true,
-      ruleForm: {
-        userName: "",
-        userPwd: "",
-        errMsg: "",
-        email: "",
-      },
+      // ruleForm: {
+      //   userName: "",
+      //   userPwd: "",
+      //   errMsg: "",
+      //   email: "",
+      // },
       registered: {
         userName: "",
         userPwd: "",
@@ -203,6 +234,35 @@ export default {
       agreement: false,
       registxt: "注册",
       statusKey: "",
+      timer: null,
+
+      ruleForm: {
+        userName: '',
+        userPwd: '',
+        checkPass: '',
+        name: '',
+        errMsg: "",
+        email: "",
+        captcha: '',
+
+      },
+      rules: {
+        userPwd: [
+          { validator: validatePass, trigger: 'blur' }
+        ],
+        checkPass: [
+          { validator: validatePass2, trigger: 'blur' }
+        ],
+        email: [
+          { validator: checkEmail, trigger: 'blur' }
+        ],
+        userName: [
+          { validator: checkUserName, trigger: 'blur' }
+        ],
+        captcha: [
+          { validator: checkCaptcha, trigger: 'blur' }
+        ],
+      }
     };
   },
   computed: {
@@ -211,32 +271,72 @@ export default {
     },
   },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
+    // resetForm(formName) {
+    //   this.$refs[formName].resetFields();
+    // },
+    // submitForm(formName) {
+    //   this.$refs[formName].validate((valid) => {
+    //     if (valid) {
+    //       alert('submit!');
+    //     } else {
+    //       console.log('error submit!!');
+    //       return false;
+    //     }
+    //   });
+    // },
+
+    loading(){
+      //启动定时器
+      this.captchaTime--;  //定时器减1
+    },
+    clearTimer(){
+        //清除定时器
+        clearInterval(this.timer);
+        this.timer = null;
     },
     SendEmail() {
-      SendEmailCaptcha({ to: this.ruleForm.email }).then((res) => {
-        if (res.code === 200) {
-          console.log(res);
-          this.messageSuccess();
-          // this.toLogin();
-        } else {
-          console.log(res);
-          this.message(res.msg);
-          // captcha.reset();
-          // this.init_geetest()
-          // location.reload()
-          // this.registxt = "注册";
-          return false;
-        }
-      });
+      if (this.emailValid) {
+        // this.messageSuccess('验证码正在发送，请注意查收！')
+        this.captchaTime = 60;
+        this.isDisabled = true;
+        this.loading();  //启动定时器
+        this.timer = setInterval(() =>{
+              //创建定时器
+            if(this.captchaTime === 1){
+                this.clearTimer();  //关闭定时器
+                // this.skipStep();
+                this.isDisabled = false;
+                this.captchaTime = '发送验证码'
+            }else{
+                this.loading();
+            }
+        },1000);
+        SendEmailCaptcha({ to: this.ruleForm.email }).then((res) => {
+          if (res.code === 200) {
+            // console.log(res);
+            // this.messageSuccess();
+            this.messageSuccess(res.msg);
+            // this.toLogin();
+            } 
+          if(res.msg === "Invalid Addresses: [456456]"){
+            this.message('邮箱格式错误')
+          } 
+          else {
+            // console.log(res);
+            this.messageSuccess(res.msg);
+            // captcha.reset();
+            // this.init_geetest()
+            // location.reload()
+            // this.registxt = "注册";
+            return false;
+          }
+        });
+      }else{
+        this.message('邮箱格式错误！')
+
+      }
+      
+
     },
     open(t, m) {
       this.$notify.info({
@@ -244,9 +344,9 @@ export default {
         message: m,
       });
     },
-    messageSuccess() {
+    messageSuccess(msg) {
       this.$message({
-        message: "恭喜您，注册成功！赶紧登录体验吧",
+        message: msg,
         type: "success",
       });
     },
@@ -265,6 +365,11 @@ export default {
       // let userName = this.registered.userName;
       // let userPwd = this.registered.userPwd;
       // let userPwd2 = this.registered.userPwd2;
+      let userName = this.ruleForm.userName;
+      let userPwd = this.ruleForm.userPwd;
+      let checkPass = this.ruleForm.checkPass;
+      let email = this.ruleForm.email;
+      let captcha = this.ruleForm.captcha;
       // if (!userName || !userPwd || !userPwd2) {
       //   this.message("账号密码不能为空!");
       //   this.registxt = "注册";
@@ -275,6 +380,11 @@ export default {
       //   this.registxt = "注册";
       //   return false;
       // }
+      if (!userName||!userPwd||!checkPass||!email||!captcha||!this.submitValid){
+        this.message("请按照提示输入!");
+        this.registxt = "注册";
+        return false;
+      }
       if (!this.agreement) {
         this.message("您未勾选同意我们的相关注册协议!");
         this.registxt = "注册";
@@ -290,30 +400,32 @@ export default {
         username: this.ruleForm.userName,
         password: this.ruleForm.userPwd,
         code: this.ruleForm.captcha,
+        email: this.ruleForm.email,
+        name: this.ruleForm.name,
       };
       window.localStorage.setItem("satoken", "");
       register(updateData).then((res) => {
         if (res.code === 200) {
-          console.log(res);
-          this.messageSuccess();
+          // console.log(res);
+          this.messageSuccess('恭喜你注册成功，抓紧去登录吧！');
           this.toLogin();
         } else {
-          console.log(res);
+          // console.log(res);
           this.message(res.msg);
-          // captcha.reset();
-          // this.init_geetest()
-          // location.reload()
+          // // captcha.reset();
+          // // this.init_geetest()
+          // // location.reload()
           this.registxt = "注册";
           return false;
         }
       });
     },
-    init_geetest() {
-      geetest().then((res) => {});
-    },
+    // init_geetest() {
+    //   geetest().then((res) => {});
+    // },
   },
   mounted() {
-    this.init_geetest();
+    // this.init_geetest();
   },
   components: {
     YFooter,
@@ -326,9 +438,12 @@ export default {
   box-sizing: content-box;
 }
 
+
 .login {
   overflow-x: hidden;
   overflow-y: hidden;
+
+
   .input {
     height: 50px;
     display: flex;
@@ -399,6 +514,7 @@ export default {
     }
   }
   .content {
+
     padding: 0 40px 22px;
     height: auto;
     .common-form {
@@ -492,6 +608,7 @@ export default {
 }
 
 .registered {
+
   h4 {
     padding: 0;
     text-align: center;

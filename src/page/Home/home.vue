@@ -8,16 +8,17 @@
         <transition name="fade">
           <div v-for="(item, i) in banner" v-if="i===mark" :key="i" style="position:absolute"  @mouseover="stopTimer" @mouseout="startTimer">
             <img v-if="item.imgUrl" class="img1" :src="item.imgUrl"/>
-            <img v-if="item.imgUrl"  class="img2 a" :src="item.imgUrl"/>
-            <img v-if="item.imgUrl"  class="img3 b" :src="item.imgUrl"/>
+            <!-- <img v-if="item.imgUrl"  class="img2 a" :src="item.imgUrl"/> -->
+            <!-- <img v-if="item.imgUrl"  class="img3 b" :src="item.imgUrl"/> -->
           </div>
         </transition>
+
       </div>
-      <div class="page">
+      <!-- <div class="page">
         <ul class="dots">
           <li class="dot-active" v-for="(item, i) in banner" :class="{ 'dot':i!=mark }" :key="i" @click="change(i)"></li>
-        </ul>+-
-      </div>
+        </ul>
+      </div> -->
     </div>
 
     <!-- <div v-for="(item,i) in home" :key="i"> -->
@@ -80,13 +81,14 @@
 
 </template>
 <script>
+import { axios } from "axios";
   import { productHome } from '/api/index.js'
   import { getRecommandGoods } from '/api/goods.js'
   import YShelf from '/components/shelf'
   import product from '/components/product'
   import mallGoods from '/components/mallGoods'
   import { setStore, getStore } from '/utils/storage.js'
-  export default {    
+  export default {
     data () {
       return {
         error: false,
@@ -178,19 +180,36 @@
       }
     },
     mounted () {
+      // const axios = require('axios').default;
+      // const headers = { "Access-Control-Allow-Origin": "https://wp.m.163.com" };
+
+      // let demoUrl = '/ug/api/wuhan/app/data/list-total'
+      // axios.get(demoUrl,{headers:headers}).then(res => {
+      //   console.log(res)
+      // })
+
+      // axios({
+      //   url: demoUrl,
+      //   method: 'get',
+      // }).then(res=>{
+      //   console.log(res)
+      // })
+
       productHome().then(res => {
         if (res.code !== 200) {
           this.error = true
           return
         }
+        // console.log(res)
+        this.banner = res.data
         let data = res.data
         this.home = data
         this.loading = false
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].id === 1) {
-            this.banner = data[i].product.productUrlList
-          }
-        }
+        // for (let i = 0; i < data.length; i++) {
+        //   if (data[i].id === 1) {
+        //     this.banner = data[i].product.productUrlList
+        //   }
+        // }
       })
       getRecommandGoods().then(res => {
         // console.log(res);
